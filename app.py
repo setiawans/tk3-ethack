@@ -1,13 +1,10 @@
 import hashlib
 import os
 import random
-import requests
-import secrets
 import string
+import secrets
 from flask import Flask, render_template, request, jsonify
 from lxml import etree
-
-RECAPTCHA_SECRET_KEY = os.getenv('RECAPTCHA_SECRET_KEY')
 
 app = Flask(__name__)
 
@@ -25,8 +22,7 @@ def random_filename(extension):
 
 @app.route('/')
 def index():
-    site_key = os.getenv('RECAPTCHA_SITE_KEY')
-    return render_template('index.html', site_key=site_key)
+    return render_template('index.html')
 
 def is_valid_svg(file_path):
     tree = etree.parse(file_path)
@@ -35,22 +31,6 @@ def is_valid_svg(file_path):
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
-    recaptcha_response = request.form.get('g-recaptcha-response')
-    if not recaptcha_response:
-        return jsonify({'error': 'Missing reCAPTCHA'}), 400
-
-    # Verify reCAPTCHA
-    recaptcha_verify_url = 'https://www.google.com/recaptcha/api/siteverify'
-    recaptcha_data = {
-        'secret': RECAPTCHA_SECRET_KEY,
-        'response': recaptcha_response
-    }
-    recaptcha_response = requests.post(recaptcha_verify_url, data=recaptcha_data)
-    recaptcha_result = recaptcha_response.json()
-
-    if not recaptcha_result.get('success'):
-        return jsonify({'error': 'Invalid reCAPTCHA'}), 400
-
     if 'file' not in request.files:
         return jsonify({'error': 'No file part'}), 400
 

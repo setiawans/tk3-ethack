@@ -25,7 +25,7 @@
     h1 {
       margin-bottom: 20px;
     }
-    input[type=\"file\"] {
+    input[type="file"] {
       margin: 10px 0;
     }
     button {
@@ -40,15 +40,12 @@
       background-color: #0056b3;
     }
   </style>
-
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
   <div class="container">
     <h1>Upload and Validate SVG</h1>
     <form id="uploadForm" enctype="multipart/form-data">
       <input type="file" name="file" id="file" accept=".svg" required><br><br>
-      <div class="g-recaptcha" data-sitekey="{{ site_key }}"></div><br>
       <button type="submit">Upload</button>
     </form>
     <div id="result" style="margin-top: 20px;"></div>
@@ -60,7 +57,6 @@
       const fileInput = document.getElementById('file');
       const formData = new FormData();
       formData.append('file', fileInput.files[0]);
-      formData.append('g-recaptcha-response', grecaptcha.getResponse());
 
       try {
         const response = await fetch('/upload', {
